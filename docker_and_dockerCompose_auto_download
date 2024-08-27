@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# Specify the version of Docker Compose to install
+DOCKER_COMPOSE_VERSION="v2.29.1"
+
+# Function to check if a program is installed
+function check_program() {
+  local program_name="$1"  # Accept the program name as a parameter
+  if command -v "$program_name" &> /dev/null; then  # Check if the program is installed
+      echo "$program_name is already installed."
+      return 0  # Return 0 if the program is installed
+  else
+      echo "$program_name is not installed."
+      return 1  # Return 1 if the program is not installed
+  fi
+}
+
+# Function to install Docker
+function install_docker() {
+  echo "Installing Docker..."
+  curl -fsSL get.docker.com -o get-docker.sh  # Download the Docker installation script
+  sh get-docker.sh  # Run the Docker installation script
+  echo "Docker installation complete."
+  sudo usermod -aG docker $USER  # Add the current user to the Docker group
+}
+
+# Function to install Docker Compose
+function install_docker_compose() {
+  echo "Installing Docker Compose..."
+  sudo curl -L "https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose  # Download Docker Compose binary
+  sudo chmod +x /usr/local/bin/docker-compose  # Make Docker Compose executable
+  echo "Docker Compose installation complete."
+}
+
+# Check if Docker is installed
+if ! check_program "docker"; then
+  install_docker  # Install Docker if it's not installed
+fi
+
+# Check if Docker Compose is installed
+if ! check_program "docker-compose"; then
+  install_docker_compose  # Install Docker Compose if it's not installed
+fi
+
+echo "Installation process completed."
