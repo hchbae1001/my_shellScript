@@ -37,9 +37,9 @@ if ! check_program "docker"; then
   install_docker  # Install Docker if it's not installed
 fi
 
-# Check if Docker Compose is installed
-if ! check_program "docker-compose"; then
-  install_docker_compose  # Install Docker Compose if it's not installed
+# Check if Docker Compose or docker compose is installed
+if ! check_program "docker-compose" && ! check_program "docker compose"; then
+  install_docker_compose  # Install Docker Compose if neither form is installed
 fi
 
 echo "Installation process completed."
